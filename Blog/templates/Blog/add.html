@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Rédiger un article — DevBlog{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-2xl border border-slate-200 shadow-sm space-y-8">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900">
+            {% if post %}Modifier : {{ post.title }}{% else %}Créer un nouvel article{% endif %}
+        </h1>
+        <p class="text-slate-500 text-sm mt-1">Remplissez les informations de base puis ajoutez vos paragraphes.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-8">
+        {% csrf_token %}
+
+        <!-- Formulaire Post principal -->
+        <div class="space-y-4 bg-slate-50 p-6 rounded-xl border border-slate-200">
+            <h2 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Informations Générales</h2>
+            
+            <div class="space-y-1">
+                <label class="block text-sm font-medium text-slate-700">Titre de l'article</label>
+                <input type="text" name="title" value="{{ form.title.value|default:'' }}" required class="w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 border">
+                {% if form.title.errors %}<p class="text-xs text-rose-500">{{ form.title.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Catégorie</label>
+                    <select name="category" class="w-full border-slate-300 rounded-lg p-2.5 border bg-white">
+                        {% for choice in form.category.field.choices %}
+                            <option value="{{ choice.0 }}" {% if form.category.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Statut</label>
+                    <select name="status" class="w-full border-slate-300 rounded-lg p-2.5 border bg-white">
+                        {% for choice in form.status.field.choices %}
+                            <option value="{{ choice.0 }}" {% if form.status.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="block text-sm font-medium text-slate-700">Extrait (Résumé)</label>
+                <textarea name="excerpt" rows="2" class="w-full border-slate-300 rounded-lg p-2.5 border">{{ form.excerpt.value|default:'' }}</textarea>
+            </div>
+
+            <div class="space-y-1">
+                <label class="block text-sm font-medium text-slate-700">Image de Couverture</label>
+                <input type="file" name="cover" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+            </div>
+        </div>
+
+        <!-- Section des Paragraphes (FormSet) -->
+        <div x-data="{ visibleBlocks: 1 }" class="space-y-6">
+            {{ formset.management_form }}
+            
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h2 class="text-lg font-semibold text-slate-800">Paragraphes de l'article</h2>
+                <button type="button" @click="if(visibleBlocks < 9) visibleBlocks++" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Ajouter un paragraphe
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                {% for form in formset %}
+                <div x-show="{{ forloop.counter0 }} < visibleBlocks" class="p-5 bg-white border border-slate-200 rounded-xl space-y-4 shadow-sm">
+                    {{ form.id }}
+                    
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Paragraphe #{{ forloop.counter }}</span>
+                        <div class="flex items-center gap-2 text-xs text-slate-500">
+                            <label>Ordre d'affichage :</label>
+                            {{ form.order }}
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Sous-titre (optionnel)</label>
+                            <input type="text" name="{{ form.prefix }}-title" value="{{ form.title.value|default:'' }}" placeholder="Titre de la section..." class="w-full border-slate-300 rounded-lg text-sm p-2 border">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Texte</label>
+                            {{ form.text }}
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Image d'illustration (optionnelle)</label>
+                            {{ form.image }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="pt-4 flex justify-end gap-3">
+            <a href="{% url 'index' %}" class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition">Annuler</a>
+            <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition">
+                Enregistrer l'article
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
