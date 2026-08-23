@@ -47,7 +47,7 @@ def add(request):
 
 def detail(request,slug):
     post = get_object_or_404(Post.objects.select_related('author','category').prefetch_related('likes','tags'),slug=slug)
-    return render(request,'blog/detail.html',context={
+    return render(request,'Blog/detail.html',context={
         'post':post
     })
 
