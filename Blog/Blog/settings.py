@@ -139,3 +139,4 @@ MAILERS = {
 MEDIA_URL ='media/'
 MEDIA_ROOT = BASE_DIR/'media/'
 AUTH_USER_MODEL = 'User.User'
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='', cast=lambda v: [s.strip() for s in v.split(',')])
