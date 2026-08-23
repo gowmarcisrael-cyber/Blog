@@ -13,7 +13,7 @@ def index(request):
         .prefetch_related("tags", "likes","paragraphs")
     )
 
-    return render(request, "blog/index.html", {
+    return render(request, "Blog/index.html", {
         "posts": posts
     })
 
@@ -33,7 +33,7 @@ def add(request):
  
             return redirect('index')
  
-        return render(request, "blog/add.html", context={
+        return render(request, "Blog/add.html", context={
             'form': form,
             'formset': formset,
         })
@@ -66,7 +66,7 @@ def edit(request, slug):
             formset.save()
             return redirect('post_detail', slug=post.slug)
  
-        return render(request, "blog/add.html", context={
+        return render(request, "Blog/add.html", context={
             'form': form,
             'formset': formset,
             'post': post,
@@ -74,7 +74,7 @@ def edit(request, slug):
  
     form = PostForm(instance=post)
     formset = ParagraphFormSet(instance=post, prefix='paragraphs')
-    return render(request, "blog/add.html", context={
+    return render(request, "Blog/add.html", context={
         'form': form,
         'formset': formset,
         'post': post,
