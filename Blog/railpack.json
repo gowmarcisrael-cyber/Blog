@@ -1,4 +1,7 @@
 {
   "$schema": "https://schema.railpack.com",
-  "provider": "python"
+  "provider": "python",
+  "deploy": {
+    "startCommand": "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn Blog.wsgi --log-file -"
+  }
 }
