@@ -40,7 +40,7 @@ def add(request):
  
     form = PostForm()
     formset = ParagraphFormSet(prefix='paragraphs')
-    return render(request, "blog/add.html", context={
+    return render(request, "Blog/add.html", context={
         'form': form,
         'formset': formset,
     })
