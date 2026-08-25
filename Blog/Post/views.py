@@ -18,7 +18,7 @@ def index(request):
     })
 
 def add(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
         form = PostForm(request.POST, request.FILES)
         formset = ParagraphFormSet(request.POST, request.FILES, prefix='paragraphs')
  
