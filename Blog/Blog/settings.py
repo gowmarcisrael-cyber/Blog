@@ -128,7 +128,7 @@ STATICFILES_DIRS = [
     ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
@@ -143,6 +143,7 @@ MEDIA_ROOT = BASE_DIR/'media/'
 AUTH_USER_MODEL = 'User.User'
 if not DEBUG: 
     CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='', cast=lambda v: [s.strip() for s in v.split(',')])
+
 
 
 CLOUDINARY_STORAGE = {
