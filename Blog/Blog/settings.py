@@ -153,13 +153,16 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': config('CLOUDINARY_API_SECRET'),
 }
 
+# Configuration des stockages pour Media (Cloudinary) et Static (WhiteNoise)
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        # Utilise le stockage statique standard de WhiteNoise sans bloquer sur les fichiers manquants
+        "BACKEND": "whitenoise.storage.StaticFilesStorage",
     },
 }
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+# Compatibilité descendante pour django-cloudinary-storage
+STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
