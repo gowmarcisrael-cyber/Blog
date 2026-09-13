@@ -5,6 +5,7 @@ from .forms import PostForm,CommentForm,ParagraphFormSet
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.db.models import F
 
 # Create your views here.
 
@@ -50,6 +51,13 @@ def add(request):
 
 def detail(request,slug):
     post = get_object_or_404(Post.objects.select_related('author','category').prefetch_related('likes','tags'),slug=slug)
+    viewed_posts = request.session.get('viewed_posts',[])
+    if not post.pk in viewed_posts:
+        Post.objects.filter(pk=post.pk).update(views=F('views') + 1)
+        post.views += 1
+        viewed_posts.append(post.pk)
+        request.session['viewed_posts'] = viewed_posts
+        request.session.modified = True
     return render(request,'Blog/detail.html',context={
         'post':post
     })
